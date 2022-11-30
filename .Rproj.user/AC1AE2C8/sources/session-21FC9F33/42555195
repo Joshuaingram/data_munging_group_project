@@ -1,0 +1,26 @@
+{
+    "id": "42555195",
+    "path": "~/Main/Projects/data_munging_group_project/source/app/user_interface/overview_tab.R",
+    "project_path": "source/app/user_interface/overview_tab.R",
+    "type": "r_source",
+    "hash": "2117341224",
+    "contents": "",
+    "dirty": false,
+    "created": 1669835317077.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "41,43",
+        "scrollLine": "32"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1669835742,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1669835742140,
+    "read_only": false,
+    "read_only_alternatives": []
+}
