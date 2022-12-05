@@ -39,7 +39,7 @@ home_tab <- tabPanel("Overview", fluid = TRUE,
                        
                        h5("David Nezelek"),
                        
-                       h5("Fehmi Nefatti"),
+                       h5("Fehmi Neffati"),
                        
                        a(img(src = "www/b_class_video.png", 
                              style="display: block; margin-left: auto; margin-right: auto;", 
