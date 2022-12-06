@@ -4,7 +4,7 @@ library(latex2exp)
 library(gridExtra)
 library(tidyverse)
 
-home_tab <- tabPanel("Overview", fluid = TRUE,
+data_tab <- tabPanel("Overview", fluid = TRUE,
                      
                      mainPanel(
                        

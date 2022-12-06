@@ -3,18 +3,16 @@ library(shiny)
 library(latex2exp)
 library(gridExtra)
 library(tidyverse)
-source(file = "source_scripts/mu_data_simulation_functionsV2.R")
-source(file = "source_scripts/mu_likelihood_functionsV2.R")
 
 # loading in GOES data
-GOES <- read_csv("data/GOES_clean.csv")
-GOES$cycle <- as.factor(GOES$cycle)
-GOES$flrtotalenergy <- GOES$Gflrtotalenergy
+#GOES <- read_csv("data/GOES_clean.csv")
+#GOES$cycle <- as.factor(GOES$cycle)
+#GOES$flrtotalenergy <- GOES$Gflrtotalenergy
 
 # loading in RHESSI data
-RHESSI <- read_csv("data/RHESSI_clean.csv")
-RHESSI$cycle <- as.factor(RHESSI$cycle)
-RHESSI$flrtotalenergy <- RHESSI$RFlrTotalEnergy
+#RHESSI <- read_csv("data/RHESSI_clean.csv")
+#RHESSI$cycle <- as.factor(RHESSI$cycle)
+#RHESSI$flrtotalenergy <- RHESSI$RFlrTotalEnergy
 
 server <- function(input, output, session){
   
