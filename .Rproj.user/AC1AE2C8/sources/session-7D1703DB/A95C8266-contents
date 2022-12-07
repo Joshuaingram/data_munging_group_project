@@ -1,4 +1,4 @@
-# User Interface - Home tab for Flare Detection Model App V2
+# User Interface - Miami Flight Price Data App (Data Munging Group Project)
 library(shiny)
 library(latex2exp)
 library(gridExtra)
@@ -8,22 +8,28 @@ overview_tab <- tabPanel("Overview", fluid = TRUE,
                      
                      mainPanel(
                        
-                       h3("Overview - Miami Flight Prices"),
+                       h3("Overview"),
                        
-                       p(""),
-                       
-                       br(),
-                       
-                       img(src = "www/flare_and_ar.png", style="display: block; margin-left: auto; margin-right: auto;", height = "60%", width = "60%"),
+                       img(src = "MIA_photo2.jpeg", style="display: block; margin-left: auto; margin-right: auto;", 
+                           height = "60%", width = "60%"),
                        
                        br(),
                        
-                       p("This web app outlines and visualizes the probability-discounted power-law model, as well as allows
-                         for the user to fit the model to subsets of real and simulated satellite datasets."),
+                       p("DO THIS"),
                        
                        br(),
                        
-                       br()
+                       h4("Summary of Results"),
+                       
+                       p("DO THIS"),
+                       
+                       br(),
+                       
+                       h4("Group Contributions"),
+                       
+                       p("DO THIS"),
+                       
+                       br(),
                        
                      ), 
                      
@@ -31,43 +37,76 @@ overview_tab <- tabPanel("Overview", fluid = TRUE,
                        
                        h4("Github Repository"),
                        
+                       a(
+                         img(src = "github_logo2.png", 
+                             style="display: block; margin-left: auto; margin-right: auto;", 
+                             height = "25%", width = "25%"
+                       ), 
+                       href="https://github.com/Joshuaingram/data_munging_group_project"
+                       ),
+                       
                        br(),
                        
                        h4("Group Members"),
                        
-                       h5("Joshua Ingram"),
+                       h5("Joshua Ingram", style = "text-align: center"),
                        
-                       h5("David Nezelek"),
-                       
-                       h5("Fehmi Neffati"),
-                       
-                       a(img(src = "www/b_class_video.png", 
+                       img(src = "josh.jpeg",
                              style="display: block; margin-left: auto; margin-right: auto;", 
-                             height = "50%", width = "50%"
-                       ), 
-                       href="https://youtu.be/k7XUanUlcN4"),
+                             height = "30%", width = "30%"
+                             ),
                        
-                       br(),
+                       tags$a(href="mailto:joshua.ingram18@ncf.edu", 
+                              tags$p("joshua.ingram18@ncf.edu", 
+                                     style = "text-align: center")),
                        
-                       h5("M-Class Flare:"),
+                       tags$a(href="https://github.com/Joshuaingram", 
+                              tags$p("joshuaingram", 
+                                     style = "text-align: center")),
                        
-                       a(img(src = "www/m_class_video.png", 
+                       tags$ul(
+                         tags$li("App development")
+                       ),
+                       
+                       h5("David Nezelek", style = "text-align: center"),
+                       
+                       img(src = "david.jpg",
                              style="display: block; margin-left: auto; margin-right: auto;", 
-                             height = "50%", width = "50%"
-                       ), 
-                       href="https://youtu.be/JTDZrQt17QI"),
+                             height = "30%", width = "30%"
+                       ),
                        
-                       br(),
+                       tags$a(href="mailto:david-paul.nezelek97@ncf.edu", 
+                              tags$p("david-paul.nezelek97@ncf.edu", 
+                                     style = "text-align: center")),
                        
-                       h5("X-Class Flare:"),
+                       tags$a(href="https://github.com/dnezelek", 
+                              tags$p("dnezelek", 
+                                     style = "text-align: center")),
                        
-                       a(img(src = "www/x_class_video.png", 
+                       tags$ul(
+                         tags$li("Data wrangling")
+                         
+                         ),
+                       
+                       h5("Fehmi Neffati", style = "text-align: center"),
+                       
+                       img(src = "fehmi.png",
                              style="display: block; margin-left: auto; margin-right: auto;", 
-                             height = "50%", width = "50%"
-                       ), 
-                       href="https://youtu.be/W3NTxPCJjFU"),
+                             height = "30%", width = "30%"
+                       ),
                        
-                       br()
+                       tags$a(href="mailto:fehmi.neffati24@ncf.edu", 
+                              tags$p("fehmi.neffati24@ncf.edu",
+                                     style = "text-align: center")),
+                       
+                       tags$a(href="https://github.com/FNeffati", 
+                              tags$p("fneffati", 
+                                     style = "text-align: center")),
+                       
+                       tags$ul(
+                         tags$li("Data quality metrics")
+                         )
+                       
                        
                        
                      )

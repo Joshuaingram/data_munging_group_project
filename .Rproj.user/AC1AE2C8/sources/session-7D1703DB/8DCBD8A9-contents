@@ -1,0 +1,71 @@
+# User Interface - Theoretical Model Tab for Flare Detection Model App V2
+library(shiny)
+library(ggplot2)
+library(latex2exp)
+library(gridExtra)
+library(tidyverse)
+library(pracma)
+library(shinybusy)
+source(file = "source_scripts/mu_data_simulation_functionsV2.R")
+source(file = "source_scripts/mu_likelihood_functionsV2.R")
+
+theoretical_tab <- tabPanel("Theoretical Model", fluid = TRUE,
+                        
+                        # Original Model subtab
+                        tabPanel(title = "Bounded Sigmoid Model",
+                                 
+                                 br(),
+                                 
+                                 p("We asssume the probability \\(\\pi\\) of detecting a flare at a log-energy value \\(H\\) has the function given by 
+                                    $$\\pi(H) = \\frac{\\gamma f^\\beta}{1 + \\gamma f^\\beta},$$
+                                    Where f has the following form
+                                    $$f = \\frac{H - H_0}{\\xi - H}.$$
+                                    Here, \\(H_0\\) is the known overall minimum log-energy level where the probability of detection is 0, 
+                                    \\(\\xi\\) is the unknown log-energy value where the probability of detection becomes 1, 
+                                    \\(\\beta\\) is a slope parameter, and \\(\\gamma\\) is a scaling parameter.
+                                    For \\(H < H_0\\) we let \\(\\pi = 0\\) and for \\(H > \\xi\\) we let \\(\\pi = 1\\). \n
+                                    We also assume that the expected number \\(\\lambda\\) of flares of a given log-energy value \\(H\\) if we could detect all that occurred is given by
+                                    $$\\lambda(H) = C 10^{-H(\\alpha - 1) + \\kappa}.$$
+                                    C is the normalization constant defined by
+                                    $$C = (10^{H_0})^{(\\alpha - 1)}(\\alpha - 1)ln(10).$$
+                                    \\(\\kappa\\) acts as the magnitude-scaling constant, \\(\\alpha\\) the is the scaling exponent, and \\(H_0\\) is the minimum log-energy value.
+                                    Thus, \\(\\mu\\), the expected number of flares of log-energy value \\(H\\) actually detected, is given by
+                                    $$\\mu(H) = \\lambda(H) \\pi(H)$$
+                                    If we partition the range of log-energy values into \\(i = 1, \\ldots, K\\) bins, we assume that \\(Y_i\\), the number of flares actually detected, follows a Poisson distribution with mean \\(\\mu_i\\) 
+                                    $$Y_i \\sim Pois(\\mu_i)$$
+                                    The expected number \\(\\mu_i\\) of flares actually detected within a bin \\(i\\) is given by
+                                    $$\\mu_i = \\frac{1}{H_i^+ - H_i^-} \\int_{ H_i^- }^{ H_i^+ } \\pi(H) \\lambda(H) dH$$
+                                    where \\(H_i^-\\) and \\(H_i^+\\) are the lower and upper bound of energy bin \\(i\\).
+                                "),
+                                 
+                                 br(),
+                                 
+                                 sidebarLayout(
+                                   #sidebar
+                                   sidebarPanel(
+                                     h4("Graphical Settings:"),
+                                     sliderInput(inputId = "range_1", label = "Range of \\(H\\):", min = 20, 
+                                                 max = 35, value = c(23, 31)),
+                                     h4("Model Parameters:"),
+                                     numericInput(inputId = "alpha_1", value = 1.8, step = 0.1, label = "$$\\alpha:$$"),
+                                     numericInput(inputId = "kappa_1", value = 5, step = 0.1, label = "$$\\kappa:$$"),
+                                     numericInput(inputId = "H0_1", value = 23.5, step = 0.1, label = "$$H_0:$$"),
+                                     numericInput(inputId = "beta_1", value = 2, step = 0.1, label = "$$\\beta:$$"),
+                                     numericInput(inputId = "gamma_1", value = 0.1, step = 0.1, label = "$$\\gamma:$$"),
+                                     numericInput(inputId = "xi_1", value = 29, step = 0.1, label = "$$\\xi \\text{ (orange vertical line)}:$$")
+                                   ),
+                                   
+                                   mainPanel(
+                                     
+                                     plotOutput("model_graphs1", height = 800)
+                                     
+                                   )
+                                 )
+                                 
+                                 
+                                 
+                        
+                       
+                                 )
+                      )
+                      

@@ -1,9 +1,9 @@
 {
     "id": "3B603F34",
-    "path": "~/Main/Projects/data_munging_group_project/source/app/user_interface/analysis_tab.R",
-    "project_path": "source/app/user_interface/analysis_tab.R",
+    "path": "~/Main/Projects/data_munging_group_project/source/app/user_interface/exploration_tab.R",
+    "project_path": "source/app/user_interface/exploration_tab.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "3180070988",
     "contents": "",
     "dirty": false,
     "created": 1670360643031.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "6,8",
+        "cursorPosition": "15,25",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1670360647,
+    "lastKnownWriteTime": 1670390154,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1670360648001,
+    "last_content_update": 1670390154421,
     "read_only": false,
     "read_only_alternatives": []
 }
