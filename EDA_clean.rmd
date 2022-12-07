@@ -115,12 +115,12 @@ latestFlights$firstAirline <- stri_extract(latestFlights$segmentsAirlineName, re
 
 
 ```{r}
-ggplot(data = latestFlights, aes(x = seatsRemaining, y = totalFare)) + geom_point()
-ggplot(data = latestFlights, aes(x = seatsRemaining, y = totalFare, color = firstAirline)) + geom_point()
-ggplot(data = latestFlights, aes(x = totalFare)) + geom_histogram()
-ggplot(data = latestFlights, aes(x = seatsRemaining)) + geom_histogram()
-ggplot(data = latestFlights, aes(x = seatsRemaining, fill = firstAirline)) + geom_histogram()
-ggplot(data = latestFlights, aes(x = layoverDurationInHours, y = totalFare, color = destinationAirport)) + geom_point()
-ggplot(data = latestFlights, aes(x = arrivalHour, y = totalFare, color = destinationAirport)) + geom_point()
-ggplot(data = latestFlights, aes(x = departureHour, y = totalFare, color = destinationAirport)) + geom_point()
+ggplot(data = latestFlights, aes(x = seatsRemaining, y = totalFare)) + geom_point() + ggtitle("Fares by Seats Remaining")
+ggplot(data = latestFlights, aes(x = seatsRemaining, y = totalFare, color = firstAirline)) + geom_point() + ggtitle("Fares by Seats Remaining, Colored by Airline")
+ggplot(data = latestFlights, aes(x = totalFare)) + geom_histogram() + ggtitle("Counts of Flights by Total Fare")
+ggplot(data = latestFlights, aes(x = seatsRemaining)) + geom_histogram() + ggtitle("Counts of Flights by Seats Remaining") + scale_x_continuous(breaks = seq(-1, 11, 1), lim = c(-1, 11))
+ggplot(data = latestFlights, aes(x = seatsRemaining, fill = firstAirline)) + geom_histogram() + ggtitle("Counts of Flights by Seats Remaining, Colored by Airline") + scale_x_continuous(breaks = seq(-1, 11, 1), lim = c(-1, 11))
+ggplot(data = latestFlights, aes(x = layoverDurationInHours, y = totalFare, color = destinationAirport)) + geom_point() + ggtitle("Fares by Length of Layover, Colored by Destination")
+ggplot(data = latestFlights, aes(x = arrivalHour, y = totalFare, color = destinationAirport)) + geom_point() + ggtitle("Fares by Hour of Arrival, Colored by Destination")
+ggplot(data = latestFlights, aes(x = departureHour, y = totalFare, color = destinationAirport)) + geom_point() + ggtitle("Fares by Hour of Departure, Colored by Destination")
 ```
