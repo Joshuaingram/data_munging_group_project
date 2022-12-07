@@ -27,7 +27,25 @@ data_tab <- tabPanel("Data Documentation", fluid = TRUE,
                        
                        h4("Data Wrangling Process"),
                        
-                       p("DO THIS"),
+                       p("We began by subsetting the original dataset of ~6,000,000 flights to/from the 15 busiest US airports. 
+                         We decided to consider only the ~300,000 flights which departed from Miami International Airport. 
+                         We wrote code to recursively read in chunks of rows with (startingAirport == ‘MIA’) until all of the desired flights were loaded. 
+                         We then saved these observations as a CSV file. This process yielded a file 1.6GB in size, greatly reduced from the original 31GB file on Kaggle. 
+                         Prior to examining the data, we identified several variables of interest in the original dataset, and several new variables which we needed to encode."),
+                       
+                       h5("Variables we created:"),
+                       
+                       tags$ul(
+                         tags$li(strong("daysInAdvance:"), "difference between the dataset variables flightDate and search Date."),
+                         tags$li(strong("departureHour:"), "extracted from dataset variable segmentsDepartureTimeEpochSeconds."),
+                         tags$li(strong("ArrivalHour:"), "extracted from dataset variable segmentsArrivalTimeEpochSeconds."),
+                         tags$li(strong("layoverDurationInHours:"), "calculated from dataset variables travelDuration and segmentDurationInSeconds."),
+                         tags$li(strong("firstAirline:"), "extracted from dataset variable airlineName.")
+                         ),
+                       
+                       p("We used the first variable we coded, daysInAdvance, to further subset our observations. 
+                         Of the ~4,000,000 searches of flights from MIA, we kept only the ~80,000 searches performed one day in advance of the flight. 
+                         We then calculated the four remaining new variables. We saved to CSV these ~80,000 rows and the nine variables listed above, yielding a 6 MB file."),
                        
                        br(),
                        

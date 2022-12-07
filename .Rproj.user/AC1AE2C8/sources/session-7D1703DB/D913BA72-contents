@@ -1,40 +1,103 @@
 # Server File for Flare Detection App V2
 library(shiny)
+library(ggplot2)
 library(latex2exp)
 library(gridExtra)
 library(tidyverse)
-library(readr)
-source("source_scripts/quality_metrics.R")
+library(pracma)
+library(shinybusy)
+source(file = "source_scripts/mu_data_simulation_functionsV2.R")
+source(file = "source_scripts/mu_likelihood_functionsV2.R")
 
-# load in airline data
-flights <- read_csv("data/miami_flights_final.csv")
-flights$seatsRemaining <- as.integer(flights$seatsRemaining)
-flights$totalFare <- as.numeric(flights$totalFare)
-flights$firstAirline <- as.factor(flights$firstAirline)
-flights$layoverDurationInHours <- as.numeric(flights$layoverDurationInHours)
-flights$arrivalHour <- as.integer(flights$arrivalHour)
-flights$departureHour <- as.integer(flights$departureHour)
-flights$destinationAirport <- as.factor(flights$destinationAirport)
+# loading in GOES data
+GOES <- read_csv("data/GOES_clean.csv")
+GOES$cycle <- as.factor(GOES$cycle)
+GOES$flrtotalenergy <- GOES$Gflrtotalenergy
+
+# loading in RHESSI data
+RHESSI <- read_csv("data/RHESSI_clean.csv")
+RHESSI$cycle <- as.factor(RHESSI$cycle)
+RHESSI$flrtotalenergy <- RHESSI$RFlrTotalEnergy
 
 server <- function(input, output, session){
   
-  observeEvent(input$variable_metric, {
-    print(input$variable_metric)
+  # years to select for data determined by years_ll slider
+  years <- reactive({
+    
+    seq(input$years[1], input$years[2], 1)
+    
   })
   
-  flights_metric <- reactive({
+  data_fit <- reactive({
     
-    data <- flights %>% 
-      filter(firstAirline %in% input$airline_metric &
-             destinationAirport %in% input$airport_metric) %>%
-      select(!!!input$variable_metric)
+    years <- years()
+    
+    if (input$data_select == "GOES"){
+      
+      data <- GOES[which(GOES$year %in% years),]
+      data <- data.frame(Gflrtotalenergy = GOES["Gflrtotalenergy"])
+      
+    } else if(input$data_select == "RHESSI"){
+      
+      data <- RHESSI[which(RHESSI$year %in% years),]
+      data <- data.frame(Gflrtotalenergy = RHESSI["RFlrTotalEnergy"][1])
+      colnames(data) <- c("Gflrtotalenergy")
+      
+    } else{
+      
+      show_modal_spinner() # show the modal window
+      
+      H0 <- input$H0_2
+      xi <- input$xi_2
+      gamma <- input$gamma_2
+      beta <- input$beta_2
+      alpha <- input$alpha_2
+      kappa <- input$kappa_2
+      
+      theta <- c(alpha, kappa, beta, gamma, xi)
+      
+      data <- data.frame(Gflrtotalenergy = 10^rmu_bs(input$n, theta, H0, input$n*1000))
+      
+      remove_modal_spinner() # remove spinner when done
+      
+    }
+    
     data
     
   })
   
-  output$metric_table1 <- renderDataTable({
-    data <- flights_metric()
-    data
+  # ML fit algorithm called by Run ML Fit button
+  observeEvent(input$ML, {
+    
+    data <- data_fit()
+    
+    df <- ggplot(data = data, aes(x=log(Gflrtotalenergy, 10))) + geom_histogram(center = input$H0_2, binwidth = input$bins)
+    bins_data <- ggplot_build(df)$data[[1]]
+    bins_data <- data.frame(y = bins_data$count, lb = bins_data$xmin, ub = bins_data$xmax, mids = bins_data$x)
+    
+    show_modal_spinner() # show the modal window
+    
+    # run ML optim
+    theta0 = c(1.8, 2, 2, 0.001, max(bins_data$lb))
+    
+    ML_results <- optim(par = theta0, fn = ll_bs, df = bins_data, H0 = input$H0_2,
+                         lower = c(1.001, 0, 1, 0.0001, min(bins_data$ub)), upper = c(3, 12, 20, 10, 35),
+                         hessian = TRUE, control = list(fnscale = -1), method = "L-BFGS-B")
+    
+    # results of model fit
+    theta_hat <- ML_results$par
+    var_cov_mat <- cov2cor(solve(-ML_results$hessian))
+    theta_se <- sqrt(diag(solve(-ML_results$hessian)))
+    
+    remove_modal_spinner() # remove spinner when done
+    
+    # update user parameter box
+    updateNumericInput(session, "alpha_2", value = theta_hat[1])
+    updateNumericInput(session, "kappa_2", value = theta_hat[2])
+    updateNumericInput(session, "beta_2", value = theta_hat[3])
+    updateNumericInput(session, "gamma_2", value = theta_hat[4])
+    updateNumericInput(session, "xi_2", value = theta_hat[5])
+    
   })
   
   # graphs for probability-discounted power-law model
@@ -186,8 +249,8 @@ server <- function(input, output, session){
     
     pi_fun <- function(x){
       pi <- ifelse(x <= H0, 0, 
-                   ifelse(x >= xi, 1, 
-                          (gamma*((x - H0)/(xi - x))^beta)/(1 + gamma*((x - H0)/(xi - x))^beta)))
+             ifelse(x >= xi, 1, 
+                    (gamma*((x - H0)/(xi - x))^beta)/(1 + gamma*((x - H0)/(xi - x))^beta)))
       pi[x <= H0] <- 0
       pi[x >= xi] <- 1
       pi[is.infinite(pi)] <- 1

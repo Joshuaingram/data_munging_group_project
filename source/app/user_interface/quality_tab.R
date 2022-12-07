@@ -4,6 +4,16 @@ library(latex2exp)
 library(gridExtra)
 library(tidyverse)
 
+# load in airline data
+flights <- read_csv("data/miami_flights_final.csv")
+flights$seatsRemaining <- as.integer(flights$seatsRemaining)
+flights$totalFare <- as.numeric(flights$totalFare)
+flights$firstAirline <- as.factor(flights$firstAirline)
+flights$layoverDurationInHours <- as.numeric(flights$layoverDurationInHours)
+flights$arrivalHour <- as.integer(flights$arrivalHour)
+flights$departureHour <- as.integer(flights$departureHour)
+flights$destinationAirport <- as.factor(flights$destinationAirport)
+
 quality_tab <- tabPanel("Quality Metrics", fluid = TRUE,
                         
                         h3("Data Quality Metrics"),
@@ -24,7 +34,7 @@ quality_tab <- tabPanel("Quality Metrics", fluid = TRUE,
                            "The metric is given by the minimum of the two ratios.
                           
                           $$\\text{Appropriate Amount of Data} = \\min ( \\frac{N_{\\text{provided}}}{N_{\\text{needed}}}, 
-                          \\frac{N_{\\text{needed}}}{N_{\\text{provided}}}  )$$"
+                          \\frac{N_{\\text{needed}}}{N_{\\text{provided}}}).$$"
                           ),
                         
                         br(),
@@ -43,7 +53,7 @@ quality_tab <- tabPanel("Quality Metrics", fluid = TRUE,
                         p("This metric reflects consistency of data stored in a standardized format. It is the proportion
                           of data stored in the desired standardized format.
                           
-                          $$\\text{Completeness} = 1 - \\frac{N_{\\text{inconsistent}}}{N_{\\text{total}}}.$$"),
+                          $$\\text{Consistent Representation} = 1 - \\frac{N_{\\text{inconsistent}}}{N_{\\text{total}}}.$$"),
                         
                         br(),
                         
@@ -51,39 +61,71 @@ quality_tab <- tabPanel("Quality Metrics", fluid = TRUE,
                           
                           sidebarPanel(
                             h4("Data Selection"),
-                            selectInput(inputId = "variable_metric", 
-                                        label = "Variable:",
-                                        multiple = TRUE,
-                                        choices = c("Variable Name 1" = "Variable Code 1",
-                                                    "Variable Name 2" = "Variable Code 2"
-                                        )),
+                            
+                            varSelectInput(inputId = "variable_metric", 
+                                           label = "Variable:", 
+                                           data = flights, 
+                                           multiple = TRUE,
+                                           selected = c("legId", "firstAirline", "departureHour", "arrivalHour",
+                                                        "layoverDurationInHours", "seatsRemaining", "totalFare",
+                                                        "destinationAirport")
+                                           ),
+                            
                             selectInput(inputId = "airport_metric", 
                                         label = "Destination Airport:",
                                         multiple = TRUE,
-                                        choices = c("Airport Name 1" = "Airport Code 1",
-                                                    "Airport Name 2" = "Airport Code 2"
-                                                    )),
+                                        choices = c("Hartsfield-Jackson Atlanta International" = "ATL",
+                                                    "Boston Logan International" = "BOS",
+                                                    "Charlotte Douglas International" = "CLT",
+                                                    "Denver International" = "DEN",
+                                                    "Dallas/Fort Worth International" = "DFW",
+                                                    "Detroit Metropolitan" = "DTW",
+                                                    "Newark Liberty International" = "EWR",
+                                                    "Dulles International" = "IAD",
+                                                    "John F. Kennedy International" = "JFK",
+                                                    "Chicago O'Hare International" = "ORD",
+                                                    "Los Angeles International" = "LAX",
+                                                    "LaGuardia" = "LGA",
+                                                    "Oakland International" = "OAK",
+                                                    "O'Hare International" = "ORD",
+                                                    "Philadelphia International" = "PHL",
+                                                    "San Francisco International" = "SFO"),
+                                        selected = c("ATL", "BOS", "CLT", "DEN", "DFW", "DTW", "EWR",
+                                                     "IAD", "JFK", "ORD", "LAX", "LGA", "OAK", "ORD",
+                                                     "PHL", "SFO")
+                                        ),
                             selectInput(inputId = "airline_metric", 
                                         label = "Airline:",
                                         multiple = TRUE,
-                                        choices = c("Airline Name 1" = "Airline Code 1",
-                                                    "Airline Name 2" = "Airline Code 2"
-                                        )),
-                            h4("Metric Parameters:"),
+                                        choices = c("Alaska" = "Alaska",
+                                                    "American" = "American",
+                                                    "Delta" = "Delta",
+                                                    "Frontier" = "Frontier",
+                                                    "JetBlue" = "JetBlue",
+                                                    "Spirit" = "Spirit",
+                                                    "Sun" = "Sun",
+                                                    "United" = "United"),
+                                        selected = c("Alaska", "American", "Delta", "Frontier", "JetBlue",
+                                                     "Spirit", "Sun", "United")
+                                        ),
+                            h4("Metric Parameters"),
                             numericInput(inputId = "needed_metric", value = 10000, step = 1, label = "$$N_{\\text{needed}}:$$"),
                             #### FIX THIS TO TAKE IN A OBJECT CLASS AND THEN COMPARE POSSIBLE TYPES TO SELECTED VARIABLE ####
                             selectInput(inputId = "format_metric", 
                                         label = "Standarized Format:",
                                         multiple = TRUE,
-                                        choices = c("Class 1" = "Class 1",
-                                                    "Class 2" = "Class 2"
-                                        )),
+                                        choices = c("Numeric" = "numeric",
+                                                    "Integer" = "integer",
+                                                    "Factor" = "factor",
+                                                    "Character" = "character"),
+                                        selected = c("numeric", "integer", "factor", "character")
+                                        ),
                             
                           ),
                           
                           mainPanel(
                             
-                            #tableOutput("metric_table1",)
+                            dataTableOutput("metric_table1")
                             
                           )
                           
