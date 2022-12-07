@@ -1,0 +1,13 @@
+name: miami_flight_prices
+title: miami_flight_prices
+username:
+account: joshuadingram
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7841394
+bundleId: 6607067
+url: https://joshuadingram.shinyapps.io/miami_flight_prices/
+when: 1670448044.10791
+lastSyncTime: 1670448044.10793
+asMultiple: FALSE
+asStatic: FALSE

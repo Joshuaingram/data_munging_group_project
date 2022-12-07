@@ -18,10 +18,7 @@ flights$destinationAirport <- as.factor(flights$destinationAirport)
 
 server <- function(input, output, session){
   
-  observeEvent(input$variable_metric, {
-    print(input$variable_metric)
-  })
-  
+  # filtering for metric page
   flights_metric <- reactive({
     
     data <- flights %>% 
@@ -37,208 +34,103 @@ server <- function(input, output, session){
     data
   })
   
-  # graphs for probability-discounted power-law model
-  output$fit_graphs1 <- renderPlot({
+  # filtering for group exploration subpage
+  flights_group <- reactive({
     
-    # data to display and fit to
-    data <- data_fit()
-    
-    # Defining input objects as variables
-    min_data <- input$range_2[1]
-    max_data <- input$range_2[2]
-    H0 <- input$H0_2
-    xi <- input$xi_2
-    gamma <- input$gamma_2
-    beta <- input$beta_2
-    alpha <- input$alpha_2
-    kappa <- input$kappa_2
-    theta <- c(alpha, kappa, beta, gamma, xi)
-    
-    pi_fun <- function(x){
-      # bounded sigmoid pi function
-      f <- (H - H0)/(xi - H)
-      pi <- (gamma * f^beta)/(1 + gamma * f^beta)
-      pi[H <= H0] <- 0
-      pi[H >= xi] <- 1
-      pi[is.infinite(pi)] <- 1
-    }
-    
-    lambda_fun <- function(x){
-      (10^H0)^(alpha - 1)*(alpha - 1) * (10^H)^(-alpha) * log(10) * 10^H * 10^kappa
-    }
-    
-    mu_fun <- function(x){
-      pi <- pi_fun(x)
-      lambda <- lambda_fun(x)
-      mu <- lambda * pi
-    }
-    
-    if (input$range_control == FALSE){
-      
-      df <- ggplot(data = data, aes(x=log(Gflrtotalenergy, 10))) + geom_histogram(center = H0, binwidth = input$bins, fill = "aquamarine4", color = "black")
-      bins_data <- ggplot_build(df)$data[[1]]
-      bins_data <- data.frame(y = bins_data$count, lb = bins_data$xmin, ub = bins_data$xmax, mids = bins_data$x)
-      
-      mu_vals <- apply(bins_data[,c(2,3)], 1, function(x) integral(fun = mu_bs, method = "Kron", xmin = x[1], xmax = x[2], theta = theta, H0 = H0))
-      bins_data$mu_vals <- mu_vals / (bins_data[,"ub"] - bins_data[,"lb"])
-      
-      p1 <- ggplot(data = data, aes(x = log(Gflrtotalenergy, 10))) + 
-        geom_histogram(center = H0, binwidth = input$bins, fill = "aquamarine4", color = "black") +
-        geom_point(data = bins_data, aes(x = mids, y = mu_vals)) +
-        xlim(input$range_2[1], input$range_2[2]) +
-        theme_bw(base_size = 20) + 
-        labs(x = "H", y = TeX("Observed Count and $\\mu_i$"), title = "Discrete Model Overlay") +
-        geom_vline(xintercept = xi, color = "sienna2")
-      
-      if (input$residuals == FALSE){
-        p2 <- ggplot(data = data, aes(x = log(Gflrtotalenergy, 10))) + 
-          geom_histogram(center = H0, binwidth = input$bins, fill = "aquamarine4", color = "black") + 
-          geom_function(fun = lambda_fun) +
-          xlim(input$range_2[1], input$range_2[2]) +
-          theme_bw(base_size = 20) + 
-          labs(x = "H", y = TeX("Observed Count and $\\mu$"), title = "Continuous Model Overlay") +
-          geom_vline(xintercept = xi, color = "sienna2")
-        
-        
-        grid.arrange(p1, p2, ncol=2)
-      } else {
-        
-        # calculuating residuals
-        bins_data$residuals <- (bins_data[,"y"] - bins_data[,"mu_vals"])
-        
-        # residuals plot
-        p3 <- ggplot(data = bins_data, aes(x = mids, y = residuals)) + 
-          geom_point() + 
-          geom_hline(yintercept = 0, linetype = "dotted") +
-          xlim(input$range_2[1], input$range_2[2]) +
-          theme_bw(base_size = 20) + 
-          labs(x = "H", y = TeX("Observed Counts - $\\mu_i$"), title = "Residuals Plot") +
-          geom_vline(xintercept = xi, color = "sienna2")
-        
-        grid.arrange(p1,p3, ncol=2)
-        
-      }
-      
-    } else{
-      
-      df <- ggplot(data = data, aes(x=log(Gflrtotalenergy, 10))) + geom_histogram(center = H0, binwidth = input$bins, fill = "aquamarine4", color = "black")
-      bins_data <- ggplot_build(df)$data[[1]]
-      bins_data <- data.frame(y = bins_data$count, lb = bins_data$xmin, ub = bins_data$xmax, mids = bins_data$x)
-      
-      mu_vals <- apply(bins_data[,c(2,3)], 1, function(x) integral(fun = mu_bs, method = "Kron", xmin = x[1], xmax = x[2], theta = theta, H0 = H0))
-      bins_data$mu_vals <- mu_vals / (bins_data[,"ub"] - bins_data[,"lb"])
-      
-      p1 <- ggplot(data = data, aes(x = log(Gflrtotalenergy, 10))) + 
-        geom_histogram(center = H0, binwidth = input$bins, fill = "aquamarine4", color = "black") +
-        geom_point(data = bins_data, aes(x = mids, y = mu_vals)) +
-        xlim(23, 32) +
-        theme_bw(base_size = 20) + 
-        labs(x = "H", y = TeX("Observed Count and $\\mu_i$"), title = "Discrete Model Overlay") +
-        geom_vline(xintercept = xi, color = "sienna2")
-      
-      if (input$residuals == FALSE){
-        p2 <- ggplot(data = data, aes(x = log(Gflrtotalenergy, 10))) + 
-          geom_histogram(center = H0, binwidth = input$bins, fill = "aquamarine4", color = "black") + 
-          geom_function(fun = lambda_fun) +
-          xlim(23, 32) +
-          theme_bw(base_size = 20) + 
-          labs(x = "H", y = TeX("Observed Count and $\\mu$"), title = "Continuous Model Overlay") +
-          geom_vline(xintercept = xi, color = "sienna2")
-        
-        
-        grid.arrange(p1, p2, ncol=2)
-      } else {
-        
-        # calculuating residuals
-        bins_data$residuals <- (bins_data[,"y"] - bins_data[,"mu_vals"])
-        
-        # residuals plot
-        p3 <- ggplot(data = bins_data, aes(x = mids, y = residuals)) + 
-          geom_point() + 
-          geom_hline(yintercept = 0, linetype = "dotted") +
-          xlim(23, 32) +
-          theme_bw(base_size = 20) + 
-          labs(x = "H", y = TeX("Observed Counts - $\\mu_i$"), title = "Residuals Plot") +
-          geom_vline(xintercept = xi, color = "sienna2")
-        
-        grid.arrange(p1,p3, ncol=2)
-        
-      }
-      
-    }
+    data <- flights %>% 
+      filter(firstAirline %in% input$airline_group &
+               destinationAirport %in% input$airport_group)
+    data
     
   })
   
-  
-  
-  # graphs for probability-discounted power-law model
-  output$model_graphs1 <- renderPlot({
+  output$group_graphs1 <- renderPlot({
     
-    # Defining input objects as variables
-    min_data <- input$range_1[1]
-    max_data <- input$range_1[2]
-    H0 <- input$H0_1
-    xi <- input$xi_1
-    gamma <- input$gamma_1
-    beta <- input$beta_1
-    alpha <- input$alpha_1
-    kappa <- input$kappa_1
+    data <- flights_group()
     
-    pi_fun <- function(x){
-      pi <- ifelse(x <= H0, 0, 
-                   ifelse(x >= xi, 1, 
-                          (gamma*((x - H0)/(xi - x))^beta)/(1 + gamma*((x - H0)/(xi - x))^beta)))
-      pi[x <= H0] <- 0
-      pi[x >= xi] <- 1
-      pi[is.infinite(pi)] <- 1
-      pi
+    if (input$vis_group == "box"){
+      
+      # boxplot by categories
+      p1 <- ggplot(data = data, aes(x = !!input$variable_group, fill = as.factor(!!input$groupby_group))) +
+        geom_boxplot() +
+        theme_bw(base_size = 20)
+      
+    }
+    if (input$vis_group == "hist"){
+      
+      # boxplot by categories
+      p1 <- ggplot(data = data, aes(x = !!input$variable_group, fill = as.factor(!!input$groupby_group))) +
+        geom_histogram() +
+        theme_bw(base_size = 20)
+      
+    }
+    if (input$vis_group == "dot"){
+      
+      # boxplot by categories
+      p1 <- ggplot(data = data, aes(x = !!input$variable_group, fill = as.factor(!!input$groupby_group))) +
+        geom_dotplot(binwidth = 10) +
+        theme_bw(base_size = 20)
       
     }
     
-    f_fun <- function(x){
-      ifelse(x == xi, NA, 
-             (x - H0)/(xi - x))
+      
+      
+      p1
+    
+  })
+  
+  # filtering for association exploration
+  flights_assoc <- reactive({
+    
+    data <- flights %>% 
+      filter(firstAirline %in% input$airline_group &
+               destinationAirport %in% input$airport_group)
+    data
+    
+  })
+  
+  output$assoc_graphs1 <- renderPlot({
+    
+    data <- flights_assoc()
+    
+    if (input$curve_assoc == "none"){
+      
+      # scatterplot by categories
+      p1 <- ggplot(data = data, aes(x = !!input$variable1_assoc, 
+                                    y = !!input$variable2_assoc,  
+                                    color = as.factor(!!input$groupby_assoc))) +
+        geom_point() +
+        theme_bw(base_size = 20)
+      
     }
     
-    lambda_fun <- function(x){
-      (10^H0)^(alpha - 1)*(alpha - 1) * (10^x)^(-alpha) * log(10) * 10^x * 10^kappa
+    if (input$curve_assoc == "linear"){
+      
+      # scatterplot by categories
+      p1 <- ggplot(data = data, aes(x = !!input$variable1_assoc, 
+                                    y = !!input$variable2_assoc,  
+                                    color = as.factor(!!input$groupby_assoc))) +
+        geom_point() +
+        geom_smooth(method = "lm") +
+        theme_bw(base_size = 20)
+      
     }
     
-    mu_fun <- function(x){
-      pi <- pi_fun(x)
-      lambda <- lambda_fun(x)
-      mu <- lambda * pi
+    if (input$curve_assoc == "smooth"){
+      
+      # scatterplot by categories
+      p1 <- ggplot(data = data, aes(x = !!input$variable1_assoc, 
+                                    y = !!input$variable2_assoc,  
+                                    color = as.factor(!!input$groupby_assoc))) +
+        geom_point() +
+        geom_smooth(method = "loess") +
+        theme_bw(base_size = 20)
+      
     }
     
-    pi_plot <- ggplot() + 
-      xlim(min_data, max_data) + 
-      geom_function(fun = pi_fun, n = 1000) + 
-      theme_bw(base_size = 20) + 
-      labs(x = "H", y = TeX("$\\pi$")) +
-      geom_vline(xintercept = xi, color = "sienna2")
     
-    f_plot <- ggplot() + 
-      xlim(min_data, max_data) + 
-      geom_function(fun = f_fun, n = 700) + 
-      theme_bw(base_size = 20) + 
-      labs(x = "H", y = "f") +
-      geom_vline(xintercept = xi, color = "sienna2")
     
-    lambda_plot <- ggplot() + 
-      xlim(min_data, max_data) + 
-      geom_function(fun = lambda_fun, n = 1000) + 
-      theme_bw(base_size = 20) + 
-      labs(x = "H", y = TeX("$\\lambda$")) +
-      geom_vline(xintercept = xi, color = "sienna2")
-    
-    mu_plot <- ggplot() + 
-      xlim(min_data, max_data) + 
-      geom_function(fun = mu_fun, n = 1000) + 
-      theme_bw(base_size = 20) + 
-      labs(x = "H", y = TeX("$\\mu$")) +
-      geom_vline(xintercept = xi, color = "sienna2")
-    
-    grid.arrange(lambda_plot, pi_plot, mu_plot, f_plot, ncol = 2)
+    p1
     
   })
   

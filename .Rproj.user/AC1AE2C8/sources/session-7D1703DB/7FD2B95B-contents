@@ -23,31 +23,7 @@ overview_tab <- tabPanel("Overview", fluid = TRUE,
                        
                        h4("Summary of Results"),
                        
-                       img(src = "seatsRemaining_firstAirline.png", style="display: block; margin-left: auto; margin-right: auto;", 
-                           height = "60%", width = "60%"),
-                       
-                       p("An unexpected spike at 7 seats remaining, particularly with American and JetBlue, led us to investigate further. It appears that these two airlines often reserve blocks of seats for crew."),
-                       
-                       img(src = "totalFare_seatsRemaining_firstAirline.png", style="display: block; margin-left: auto; margin-right: auto;", 
-                           height = "60%", width = "60%"),
-                       
-                       p("Fare appears to correlate inversely with number of seats remaining, as expected."),
-                       
-                       img(src = "totalFare_layoverDurationInHours_destinationAirport.png", style="display: block; margin-left: auto; margin-right: auto;", 
-                           height = "60%", width = "60%"),
-                       
-                       p("No pattern is apparent for flights with layovers of reasonable length. 
-                         The small number of flights with extended layovers include fewer of the highest fares."),
-                       
-                       img(src = "totalFare_arrivalHour_destinationAirport.png", style="display: block; margin-left: auto; margin-right: auto;", 
-                           height = "60%", width = "60%"),
-                       
-                       p("Very few flights arrive in the wee hours of the morning, and none of these flights have very high fares."),
-                       
-                       img(src = "totalFare_departureHour_destinationAirport.png", style="display: block; margin-left: auto; margin-right: auto;", 
-                           height = "60%", width = "60%"),
-                       
-                       p("Late night departures appear to have lower fares."),
+                       p("DO THIS"),
                        
                        br(),
                        

@@ -1,0 +1,26 @@
+{
+    "id": "0FEF0F8A",
+    "path": "~/Main/Projects/data_munging_group_project/source/app/user_interface/group_tab.R",
+    "project_path": "source/app/user_interface/group_tab.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1670443278583.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "66,26",
+        "scrollLine": "53"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1670447220,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1670447220727,
+    "read_only": false,
+    "read_only_alternatives": []
+}
