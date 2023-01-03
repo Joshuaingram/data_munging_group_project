@@ -69,7 +69,8 @@ group_tab <- tabPanel("Group", fluid = TRUE,
                                          label = "Plot Type:", 
                                          choices = c("Boxplot" = "box",
                                                     "Histogram" = "hist",
-                                                    "Dotplot" = "dot"),
+                                                    "Dotplot" = "dot",
+                                                    "Barplot" = "bar"),
                                          selected = c("box")
                                          
                                          

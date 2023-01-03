@@ -58,7 +58,7 @@ server <- function(input, output, session){
     }
     if (input$vis_group == "hist"){
       
-      # boxplot by categories
+      # histogram by categories
       p1 <- ggplot(data = data, aes(x = !!input$variable_group, fill = as.factor(!!input$groupby_group))) +
         geom_histogram() +
         theme_bw(base_size = 20)
@@ -66,15 +66,23 @@ server <- function(input, output, session){
     }
     if (input$vis_group == "dot"){
       
-      # boxplot by categories
+      # dot plot by categories
       p1 <- ggplot(data = data, aes(x = !!input$variable_group, fill = as.factor(!!input$groupby_group))) +
         geom_dotplot(binwidth = 10) +
         theme_bw(base_size = 20)
       
     }
-    
+    if (input$vis_group == "bar"){
       
+      # bar plot by categories
+      p1 <- ggplot(data = data, aes(as.factor(!!input$groupby_group), !!input$variable_group)) +
+        geom_bar(position = "dodge",
+                 stat = "summary",
+                 fun = "mean") +
+        theme_bw(base_size = 20)
       
+    }
+ 
       p1
     
   })

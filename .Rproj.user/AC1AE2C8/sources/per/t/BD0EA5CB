@@ -3,7 +3,7 @@
     "path": "~/Main/Projects/data_munging_group_project/source/app/server.R",
     "project_path": "source/app/server.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "146388344",
     "contents": "",
     "dirty": false,
     "created": 1669834599743.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "70,34",
-        "scrollLine": "44"
+        "cursorPosition": "63,32",
+        "scrollLine": "47"
     },
     "folds": "",
-    "lastKnownWriteTime": 1670447857,
+    "lastKnownWriteTime": 1670451251,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1670447857161,
+    "last_content_update": 1670451251555,
     "read_only": false,
     "read_only_alternatives": []
 }
